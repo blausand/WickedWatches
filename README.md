@@ -14,9 +14,9 @@ Transistor is free software. It is published under the [MIT open source license]
 
 Install Transistor
 ------------------
-[<img src="https://play.google.com/intl/de_de/badges/images/generic/en_badge_web_generic.png" width="192">](https://play.google.com/store/apps/details?id=org.y20k.transistor)
+[<img src="https://play.google.com/intl/de_de/badges/images/generic/en_badge_web_generic.png" width="192">](https://play.google.com/store/apps/details?id=net.blausand.wickedwatch)
 
-[<img src="https://cloud.githubusercontent.com/assets/9103935/14702535/45f6326a-07ab-11e6-9256-469c1dd51c22.png" width="192">](https://f-droid.org/repository/browse/?fdid=org.y20k.transistor)
+[<img src="https://cloud.githubusercontent.com/assets/9103935/14702535/45f6326a-07ab-11e6-9256-469c1dd51c22.png" width="192">](https://f-droid.org/repository/browse/?fdid=net.blausand.wickedwatch)
 
 [... or get a Release APK here on GitHub](https://github.com/y20k/transistor/releases)
 
@@ -41,7 +41,7 @@ The option to place a shortcut for a station on the Home screen can be accessed 
 The rename and delete options can be accessed both from the station's detail screen. Just tap on the three dots symbol. You can manage the list of stations also from a file browser (see next question).
 
 ### Where does Transistor store its stations?
-Transistor does not save its list of stations in a database. Instead it stores stations as M3U files on your device's external storage. Feel free to tinker with those files using the text editor of your choice. The files are stored in /Android/data/org.y20k.transistor/files/Collection.
+Transistor does not save its list of stations in a database. Instead it stores stations as M3U files on your device's external storage. Feel free to tinker with those files using the text editor of your choice. The files are stored in /Android/data/net.blausand.wickedwatch/files/Collection.
 
 ### How do I backup and transfer my radio stations?
 Transistor supports Android 6's [Auto Backup](http://developer.android.com/about/versions/marshmallow/android-6.0.html#backup) feature. Radio stations are always backed up to your Google account and will be restored at reinstall. On devices running on older versions of Android you must manually save and restore the "Collection" folder.

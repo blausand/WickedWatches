@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.y20k.transistor">
+    package="net.blausand.wickedwatch">
 
     <!-- NORMAL PERMISSIONS, automatically granted -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
@@ -15,19 +15,21 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".Transistor"
+        android:name=".Wickedwatch"
         android:allowBackup="true"
-        android:supportsRtl="true"
         android:fullBackupContent="@xml/backupscheme"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/TransistorAppTheme">
 
         <!-- ANDROID AUTO SUPPORT -->
-        <!--  https://developer.android.com/training/auto/audio/ -->
-        <meta-data android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc"/>
-        <meta-data android:name="com.google.android.gms.car.notification.SmallIcon"
+        <!-- https://developer.android.com/training/auto/audio/ -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+        <meta-data
+            android:name="com.google.android.gms.car.notification.SmallIcon"
             android:resource="@mipmap/ic_launcher" />
 
         <!-- MEDIA BUTTON RECEIVER -->
@@ -40,28 +42,32 @@
         <!-- MAIN ACTIVITY -->
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:resizeableActivity="true"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout">
+            android:resizeableActivity="true">
 
             <!-- Launcher -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- Voice control -->
             <intent-filter>
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- handle file extension intent from web browser -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -73,8 +79,10 @@
             <!-- handle mimetype intent from web browser -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -90,7 +98,9 @@
             <!-- handle file extension intent from file browser -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:mimeType="audio/x-scpls" />
@@ -103,9 +113,9 @@
             </intent-filter>
 
             <!-- App Shortcuts -->
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
-
         </activity>
 
         <!-- PLAYER SERVICE -->
@@ -116,12 +126,12 @@
             android:stopWithTask="false"
             tools:ignore="ExportedService">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService"/>
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
             <intent-filter>
-                <action android:name="org.y20k.transistor.action.PLAY" />
-                <action android:name="org.y20k.transistor.action.STOP" />
-                <action android:name="org.y20k.transistor.action.DISMISS" />
+                <action android:name="net.blausand.wickedwatch.action.PLAY" />
+                <action android:name="net.blausand.wickedwatch.action.STOP" />
+                <action android:name="net.blausand.wickedwatch.action.DISMISS" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -129,9 +139,7 @@
         </service>
 
         <!-- SLEEP TIMER SERVICE -->
-        <service
-            android:name=".helpers.SleepTimerService">
-        </service>
+        <service android:name=".helpers.SleepTimerService"></service>
 
     </application>
 

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <!-- activities -->
-    <string name="app_name">Transistor</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
+    <string name="app_name">Wicked Watch</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
 
     <!-- app shortcuts -->
     <string name="shortcut_last_station_short_label">Last station</string>
@@ -144,7 +144,7 @@
     <string name="onboarding_app_rodriguez_quote_2" translatable="false">On a velvet afternoon</string>
     <string name="player_sheet_p_no_data" translatable="false">-</string>
 
-    <!-- Version 3 of Transistor removes the screens infosheet_howto and infosheet_about.
+    <!-- Version 3 of Wickedwatch removes the screens infosheet_howto and infosheet_about.
     The last version containing those strings is v2.3.7
     https://github.com/y20k/transistor/tree/v2.3.7/app/src/main/res -->
 

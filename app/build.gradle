@@ -38,10 +38,11 @@ dependencies {
     implementation 'com.android.support:support-media-compat:' + supportLibraryVersion
     implementation 'com.android.support:palette-v7:' + supportLibraryVersion
     implementation 'com.android.support.constraint:constraint-layout:' + constraintLayoutVersion
-
     implementation 'com.google.android.exoplayer:exoplayer-core:' + exoPlayerVersion
     implementation 'com.google.android.exoplayer:exoplayer-hls:' + exoPlayerVersion
-
     implementation 'android.arch.lifecycle:extensions:' + archLifecycleVersion
     annotationProcessor 'android.arch.lifecycle:compiler:' + archLifecycleVersion
+    implementation files('lib/javaosc.jar')
+    //implementation files('lib/beads.jar')
+    //implementation files('lib/json-lib.jar')
 }

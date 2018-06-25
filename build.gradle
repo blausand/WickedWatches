@@ -22,7 +22,7 @@ allprojects {
     }
 
     project.ext {
-        applicationId = 'org.y20k.transistor'
+        applicationId = 'net.blausand.wickedwatch'
         versionCode = 57
         versionName = '3.0.7'
         minSdkVersion = 19
