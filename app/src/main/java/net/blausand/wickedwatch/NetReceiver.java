@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.mp3.Mp3Extractor;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -34,36 +36,23 @@ public class NetReceiver {
     private static final String LOG_TAG = NetReceiver.class.getSimpleName();
 
     //private ArrayList<Sound> mSounds = null;
-    //public Context context;
+    private Context context;
     //private SoundAdapter mAdapter = null;
-    // create MediaSource
-    private MediaSource mediaSource;
+
+    private MediaSource sample;
+    public SimpleExoPlayer samplePlayer;
 
     public NetReceiver() {
-        //mnb: inherit a cntext. Just guessing so that we have something for mMediaplayer.create()
-        //context = ;
-        LogHelper.d(LOG_TAG,"++++ Constructor of NetReceiver. Why never going into onCreate() and OSClistener?");
     }
 
-    /*
-    public int[] downloadAudioSet(){
-
-        //int free =
-        File appDir = Environment.getDataDirectory();
-        //mkdir, "media");
-        openFileOutput(appDir, int)
-        return new int[]{0};
-    }
-    */
-
-    public ExtractorMediaSource setupOSC(Context context, SimpleExoPlayer thePlayer) {
+    public void initSampler(Context c, SimpleExoPlayer player) {
+        samplePlayer = player;
+        context = c;
 
         Uri uri = Uri.fromFile(new File("/storage/emulated/0/Music/audio.mp3"));   //RawResourceDataSource.buildRawResourceUri(R.raw.snd);
-
-
         DataSpec dataSpec = new DataSpec(uri);
-        LogHelper.d(LOG_TAG, "++++ Setting up OSC with ++++"+ dataSpec.toString());
         final FileDataSource fileDataSource = new FileDataSource();
+
         try {
             fileDataSource.open(dataSpec);
         } catch (FileDataSource.FileDataSourceException e) {
@@ -77,15 +66,31 @@ public class NetReceiver {
             }
         };
 
-        ExtractorMediaSource mediaSource =
-                new ExtractorMediaSource.Factory(
-                new DefaultDataSourceFactory(context, "tzu")).
-                        createMediaSource(fileDataSource.getUri());
-          //      (uri, DataSource.Factory { dataSource }, Mp3Extractor.FACTORY, null, null) //buildMediaSource(uri);
-        LogHelper.d(LOG_TAG, "++++ Created MediaSource: ++++"+mediaSource.toString());
 
-//        mediaSource.prepareSource(thePlayer,false,null);
-        LogHelper.d(LOG_TAG, "++++ Prepared Source ++++");
+        sample = new ExtractorMediaSource.Factory(
+                        new DefaultDataSourceFactory(context, "CommandSampler")).
+                        createMediaSource(fileDataSource.getUri());
+        //      (uri, DataSource.Factory { dataSource }, Mp3Extractor.FACTORY, null, null) //buildMediaSource(uri);
+        LogHelper.d(LOG_TAG, "++++ Created MediaSource: ++++"+sample.toString());
+        samplePlayer.prepare(sample);
+        //.prepareSource(samplePlayer, false, null);
+        LogHelper.d(LOG_TAG, "++++ Prepared Source for: ++++"+samplePlayer.toString());
+    }
+
+    /*
+    public int[] downloadAudioSet(){
+
+        //int free =
+        File appDir = Environment.getDataDirectory();
+        //mkdir, "media");
+        openFileOutput(appDir, int)
+        return new int[]{0};
+    }
+    */
+
+    public boolean setupOSC() {
+
+        LogHelper.d(LOG_TAG, "++++ Setting up OSC ++++");
 
         try {
             OSCPortIn receiver = new OSCPortIn(OSCPortIn.defaultSCOSCPort());
@@ -111,17 +116,28 @@ public class NetReceiver {
 
                     LogHelper.d(LOG_TAG,name);
 
-//                    mMediaPlayer.seekTo(0); //create(context, R.raw.snd);
-//                    mMediaPlayer.start();
-                    //play(name, velocity, panning);
+                    fireSample(name, velocity, panning);
+
                 }
             });
             receiver.startListening();
 
-            return mediaSource;
+            return true;
         } catch(Exception e) {
-            return null;
+            return false;
         }
 
     }
+
+    public void fireSample(String name, float velocity, float panning) {
+        if (sample==null){
+            LogHelper.d(LOG_TAG,"++++ sample is null ++++");
+        }
+        LogHelper.d(LOG_TAG,"++++ samplePlayer: "+sample.toString());
+
+        samplePlayer.prepare(sample);
+        samplePlayer.setPlayWhenReady(true);
+
+    }
+
 }
