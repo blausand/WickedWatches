@@ -144,6 +144,9 @@
     <string name="onboarding_app_rodriguez_quote_2" translatable="false">On a velvet afternoon</string>
     <string name="player_sheet_p_no_data" translatable="false">-</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <!-- Version 3 of Wickedwatch removes the screens infosheet_howto and infosheet_about.
     The last version containing those strings is v2.3.7
     https://github.com/y20k/transistor/tree/v2.3.7/app/src/main/res -->
