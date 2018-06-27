@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <!-- activities -->
-    <string name="app_name">Transistor</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
+    <string name="app_name">Wicked Watch</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
 
     <!-- app shortcuts -->
     <string name="shortcut_last_station_short_label">Последняя станция</string>
@@ -85,15 +85,15 @@
     <string name="dialog_error_title_fetch_read">Проблема чтения</string>
     <string name="dialog_error_title_fetch_write">Проблема записи</string>
     <string name="dialog_error_message_fetch_general_external_storage">Внешнее хранилище:</string>
-    <string name="dialog_error_message_fetch_general_hint_m3u">Подсказка: Transistor может работать только с потоками, закодированными в MP3, AAC и Ogg/Opus, или с ссылками, заканчивающимися на .m3u или .pls.</string>
+    <string name="dialog_error_message_fetch_general_hint_m3u">Подсказка: Wicked Watch может работать только с потоками, закодированными в MP3, AAC и Ogg/Opus, или с ссылками, заканчивающимися на .m3u или .pls.</string>
     <string name="dialog_error_message_fetch_general_playlist_type">MIME-тип файла:</string>
     <string name="dialog_error_message_fetch_general_stream_type">MIME-тип потока:</string>
     <string name="dialog_error_message_fetch_general_file_content">Содержание файла:</string>
-    <string name="dialog_error_message_fetch_download">Transistor не может обработать эту ссылку.</string>
+    <string name="dialog_error_message_fetch_download">Wicked Watch не может обработать эту ссылку.</string>
     <string name="dialog_error_message_fetch_download_station_url">Адрес станции:</string>
-    <string name="dialog_error_message_fetch_read">Transistor не может обработать этот файл.</string>
+    <string name="dialog_error_message_fetch_read">Wicked Watch не может обработать этот файл.</string>
     <string name="dialog_error_message_fetch_read_file_location">Расположение файла:</string>
-    <string name="dialog_error_message_fetch_write">Transistor не смог сохранить эту станцию.</string>
+    <string name="dialog_error_message_fetch_write">Wicked Watch не смог сохранить эту станцию.</string>
 
     <!-- messages -->
     <string name="actioncall_message_start_here">Добавить новую станцию</string>
@@ -122,7 +122,7 @@
     <string name="toastalert_headphones_unplugged">Наушники отключили. Воспроизведение остановлено.</string>
     <string name="toastalert_permission_denied">Доступ запрещён:</string>
     <string name="toastalert_station_not_found">Невозможно найти станцию.</string>
-    <string name="toastalert_stream_not_found">Transistor не распознал эту станцию. Пожалуйста, удалите её и снова добавьте на домашний экран.</string>
+    <string name="toastalert_stream_not_found">Wicked Watch не распознал эту станцию. Пожалуйста, удалите её и снова добавьте на домашний экран.</string>
     <string name="snackbar_request_storage_access">Приложению должно быть предоставлено разрешение на чтение данных на внешнем накопителе.</string>
     <string name="snackbar_message_timer_set">Таймер сна установлен на</string>
 

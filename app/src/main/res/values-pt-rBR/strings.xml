@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources><string name="app_name">Transistor</string> <string name="shortcut_last_station_short_label">Última estação</string>
+<resources><string name="app_name">Wicked Watch</string> <string name="shortcut_last_station_short_label">Última estação</string>
     <string name="shortcut_last_station_long_label">Sintonizar última estação</string>
     <string name="shortcut_last_station_disabled_message">Atalho para reproduzir última estação desabilitado.</string>
 
@@ -75,15 +75,15 @@
     <string name="dialog_error_title_fetch_read">Ler problema</string>
     <string name="dialog_error_title_fetch_write">Escrever um problema</string>
     <string name="dialog_error_message_fetch_general_external_storage">Armazenamento externo:</string>
-    <string name="dialog_error_message_fetch_general_hint_m3u">Dica: Transistor só lê arquivos de transmissão em MP3, AAC e Ogg/Opus ou links terminados em .m3u ou .pls.</string>
+    <string name="dialog_error_message_fetch_general_hint_m3u">Dica: Wicked Watch só lê arquivos de transmissão em MP3, AAC e Ogg/Opus ou links terminados em .m3u ou .pls.</string>
     <string name="dialog_error_message_fetch_general_playlist_type">Tipo de arquivo MIME:</string>
     <string name="dialog_error_message_fetch_general_stream_type">Tipo de transmissão MIME:</string>
     <string name="dialog_error_message_fetch_general_file_content">Conteúdo do arquivo:</string>
-    <string name="dialog_error_message_fetch_download">Transistor tentou, mas não pôde compreender o link.</string>
+    <string name="dialog_error_message_fetch_download">Wicked Watch tentou, mas não pôde compreender o link.</string>
     <string name="dialog_error_message_fetch_download_station_url">Link de transmissão da estação:</string>
-    <string name="dialog_error_message_fetch_read">Transistor tentou, mas não pôde compreender o arquivo.</string>
+    <string name="dialog_error_message_fetch_read">Wicked Watch tentou, mas não pôde compreender o arquivo.</string>
     <string name="dialog_error_message_fetch_read_file_location">Local do arquivo:</string>
-    <string name="dialog_error_message_fetch_write">Transistor tentou, mas não pôde salvar a estação.</string>
+    <string name="dialog_error_message_fetch_write">Wicked Watch tentou, mas não pôde salvar a estação.</string>
 
     <string name="actioncall_message_start_here">Adicionar nova estação</string>
     <string name="toastmessage_add_download_started">Transferência iniciada.</string>
@@ -111,8 +111,8 @@
     <string name="toastalert_headphones_unplugged">Fones de ouvido desconectados. A reprodução parou.</string>
     <string name="toastalert_permission_denied">Permissão negada:</string>
     <string name="toastalert_station_not_found">Não foi possível encontrar a estação.</string>
-    <string name="toastalert_stream_not_found">Transistor não reconheceu a estação. Remova e adicione-a novamente à tela inicial.</string>
-    <string name="snackbar_request_storage_access">Transistor precisa de permissão para acessar os arquivos do armazenamento externo.</string>
+    <string name="toastalert_stream_not_found">Wicked Watch não reconheceu a estação. Remova e adicione-a novamente à tela inicial.</string>
+    <string name="snackbar_request_storage_access">Wicked Watch precisa de permissão para acessar os arquivos do armazenamento externo.</string>
     <string name="snackbar_message_timer_set">Temporizador definido para</string>
 
     <string name="notification_play">Tocar</string>

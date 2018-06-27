@@ -60,6 +60,7 @@ import android.widget.Toast;
 import net.blausand.wickedwatch.adapter.CollectionAdapter;
 import net.blausand.wickedwatch.adapter.CollectionViewModel;
 import net.blausand.wickedwatch.core.Station;
+import net.blausand.wickedwatch.core.Wicked;
 import net.blausand.wickedwatch.helpers.DialogRename;
 import net.blausand.wickedwatch.helpers.ImageHelper;
 import net.blausand.wickedwatch.helpers.LogHelper;
@@ -106,6 +107,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     private TextView mStationDataSheetChannelCount;
     private TextView mStationDataSheetSampleRate;
     private ConstraintLayout mOnboardingLayout;
+    private ConstraintLayout mWickedMainLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
@@ -119,7 +121,9 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     private boolean mSleepTimerRunning;
     private String mSleepTimerNotificationMessage;
     private Snackbar mSleepTimerNotification;
-
+    //mnb: and some for wicked watches:
+    private TextView mWickedSheetLevel;
+    private TextView mWickedSheetScore;
 
     /* Constructor (default) */
     public MainActivityFragment() {
@@ -155,6 +159,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 
         // get needed references to views
         mOnboardingLayout = mRootView.findViewById(R.id.onboarding_layout);
+        mWickedMainLayout = mRootView.findViewById(R.id.wickedmain_layout);
         mRecyclerView = mRootView.findViewById(R.id.list_recyclerview);
         mSwipeRefreshLayout = mRootView.findViewById(R.id.swipeRefreshLayout);
         mPlayerStationImage = mRootView.findViewById(R.id.player_station_image);
@@ -171,6 +176,9 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
         mStationDataSheetMimeType = mRootView.findViewById(R.id.player_sheet_p_mime);
         mStationDataSheetChannelCount = mRootView.findViewById(R.id.player_sheet_p_channels);
         mStationDataSheetSampleRate = mRootView.findViewById(R.id.player_sheet_p_samplerate);
+        //mnb: and those for wicked views:
+        mWickedSheetLevel = mRootView.findViewById(R.id.Level);
+        mWickedSheetScore = mRootView.findViewById(R.id.Score);
 
         // set up RecyclerView
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -196,7 +204,8 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
         mCollectionViewModel = ViewModelProviders.of((AppCompatActivity) mActivity).get(CollectionViewModel.class);
         mCollectionViewModel.getStationList().observe((LifecycleOwner) mActivity, createStationListObserver());
         mCollectionViewModel.getPlayerServiceStation().observe((LifecycleOwner) mActivity, createStationObserver());
-
+        mCollectionViewModel.getWickedState().observe((LifecycleOwner) mActivity, createWickedObserver());
+        //mnb: hook_level_here
         return mRootView;
     }
 
@@ -904,6 +913,19 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 //            v.vibrate(VibrationEffect.createOneShot(50, DEFAULT_AMPLITUDE)); // todo check if there is a support library vibrator
     }
 
+    private Observer<Wicked> createWickedObserver() {
+        return new Observer<Wicked>()  {
+            @Override
+            public void onChanged(@Nullable Wicked newWicked) {
+                if (newWicked != null) {
+                    mWickedSheetLevel.setText(newWicked.getLevel());
+                    mWickedSheetScore.setText(newWicked.getScore());
+                }
+
+            }
+
+        };
+    }
 
     /* Creates an observer for collection of stations stored as LiveData */
     private Observer<ArrayList<Station>> createStationListObserver() {

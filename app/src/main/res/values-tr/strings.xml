@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <!-- activities -->
-    <string name="app_name">Transistor</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
+    <string name="app_name">Wicked Watch</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
 
     <!-- app shortcuts -->
     <string name="shortcut_last_station_short_label">Son istasyon</string>
@@ -85,15 +85,15 @@
     <string name="dialog_error_title_fetch_read">Okuma Sorunu</string>
     <string name="dialog_error_title_fetch_write">Yazma Sorunu</string>
     <string name="dialog_error_message_fetch_general_external_storage">Harici depolama:</string>
-    <string name="dialog_error_message_fetch_general_hint_m3u">İpucu: Transistor sadece MP3, AAC ve Ogg/Opus ile kodlanmış yayınları veya .m3u veya .pls ile biten bağlantıları işleyebilir.</string>
+    <string name="dialog_error_message_fetch_general_hint_m3u">İpucu: Wicked Watch sadece MP3, AAC ve Ogg/Opus ile kodlanmış yayınları veya .m3u veya .pls ile biten bağlantıları işleyebilir.</string>
     <string name="dialog_error_message_fetch_general_playlist_type">Dosyanın MIME türü:</string>
     <string name="dialog_error_message_fetch_general_stream_type">Yayının MIME türü:</string>
     <string name="dialog_error_message_fetch_general_file_content">Dosyanın içeriği:</string>
-    <string name="dialog_error_message_fetch_download">Transistor çok uğraştı fakat bağlantıyı tanıyamadı.</string>
+    <string name="dialog_error_message_fetch_download">Wicked Watch çok uğraştı fakat bağlantıyı tanıyamadı.</string>
     <string name="dialog_error_message_fetch_download_station_url">İstasyon yayın bağlantısı:</string>
-    <string name="dialog_error_message_fetch_read">Transistor çok uğraştı fakat dosyayı tanıyamadı.</string>
+    <string name="dialog_error_message_fetch_read">Wicked Watch çok uğraştı fakat dosyayı tanıyamadı.</string>
     <string name="dialog_error_message_fetch_read_file_location">Dosyanın yeri:</string>
-    <string name="dialog_error_message_fetch_write">Transistor çok uğraştı fakat istasyonu kaydedemedi.</string>
+    <string name="dialog_error_message_fetch_write">Wicked Watch çok uğraştı fakat istasyonu kaydedemedi.</string>
 
     <!-- messages -->
     <string name="actioncall_message_start_here">Yeni istasyon ekle</string>
@@ -122,8 +122,8 @@
     <string name="toastalert_headphones_unplugged">Kulaklık çıkarıldı. Oynatma durdu.</string>
     <string name="toastalert_permission_denied">İzin reddedildi:</string>
     <string name="toastalert_station_not_found">İstasyon bulunamıyor.</string>
-    <string name="toastalert_stream_not_found">Transistor bu istasyonu tanımıyor. Lütfen silin ve Ana ekrana tekrar ekleyin.</string>
-    <string name="snackbar_request_storage_access">Transistor, harici depolamadaki verilere erişebilmek için okuma izni verilmesine gerek duyar.</string>
+    <string name="toastalert_stream_not_found">Wicked Watch bu istasyonu tanımıyor. Lütfen silin ve Ana ekrana tekrar ekleyin.</string>
+    <string name="snackbar_request_storage_access">Wicked Watch, harici depolamadaki verilere erişebilmek için okuma izni verilmesine gerek duyar.</string>
     <string name="snackbar_message_timer_set">Uyku zamanlayıcısı ayarı</string>
 
     <!-- notification -->

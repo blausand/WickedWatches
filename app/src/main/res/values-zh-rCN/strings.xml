@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <!-- activities -->
-    <string name="app_name">Transistor</string>
+    <string name="app_name">Wicked Watch</string>
     <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
 
     <!-- app shortcuts -->
@@ -88,13 +88,13 @@
     <string name="dialog_error_title_fetch_read">读取问题</string>
     <string name="dialog_error_title_fetch_write">写入问题</string>
     <string name="dialog_error_message_fetch_general_external_storage">外部存储：</string>
-    <string name="dialog_error_message_fetch_general_hint_m3u">提示：Transistor 只能处理 MP3 和 OGG 编码的流媒体，或者以 .m3u 或 .pls 结尾的 URL。</string>
+    <string name="dialog_error_message_fetch_general_hint_m3u">提示：Wicked Watch 只能处理 MP3 和 OGG 编码的流媒体，或者以 .m3u 或 .pls 结尾的 URL。</string>
     <string name="dialog_error_message_fetch_general_file_content">文件内容：</string>
-    <string name="dialog_error_message_fetch_download">Transistor 努力尝试，但没能感应到指定链接。</string>
+    <string name="dialog_error_message_fetch_download">Wicked Watch 努力尝试，但没能感应到指定链接。</string>
     <string name="dialog_error_message_fetch_download_station_url">电台 URL：</string>
-    <string name="dialog_error_message_fetch_read">Transistor 努力尝试，但没能感应到指定文件。</string>
+    <string name="dialog_error_message_fetch_read">Wicked Watch 努力尝试，但没能感应到指定文件。</string>
     <string name="dialog_error_message_fetch_read_file_location">文件位置：</string>
-    <string name="dialog_error_message_fetch_write">Transistor 努力尝试，但没能保存指定电台到存储。</string>
+    <string name="dialog_error_message_fetch_write">Wicked Watch 努力尝试，但没能保存指定电台到存储。</string>
 
     <!-- messages -->
     <string name="actioncall_message_start_here">添加新电台</string>
@@ -123,8 +123,8 @@
     <string name="toastalert_headphones_unplugged">耳机已拔出。播放停止。</string>
     <string name="toastalert_permission_denied">权限被拒绝：</string>
     <string name="toastalert_station_not_found">Unable to find station.</string>
-    <string name="toastalert_stream_not_found">Transistor 无法识别此电台。请删除它并重新添加到首页。</string>
-    <string name="snackbar_request_storage_access">Transistor 需要被授权读取以从外部存储访问数据。</string>
+    <string name="toastalert_stream_not_found">Wicked Watch 无法识别此电台。请删除它并重新添加到首页。</string>
+    <string name="snackbar_request_storage_access">Wicked Watch 需要被授权读取以从外部存储访问数据。</string>
     <string name="snackbar_message_timer_set">睡眠定时器设为</string>
 
     <!-- notification -->

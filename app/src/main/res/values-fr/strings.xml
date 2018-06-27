@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <!-- activities -->
-    <string name="app_name">Transistor</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
+    <string name="app_name">Wicked Watch</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
 
     <!-- app shortcuts -->
     <string name="shortcut_last_station_short_label">Dernière station</string>
@@ -85,15 +85,15 @@
     <string name="dialog_error_title_fetch_read">Erreur de lecture</string>
     <string name="dialog_error_title_fetch_write">Erreur d\'écriture</string>
     <string name="dialog_error_message_fetch_general_external_storage">Stockage externe :</string>
-    <string name="dialog_error_message_fetch_general_hint_m3u">Astuce : Transistor peut traiter uniquement les flux MP3, AAC et Ogg/Opus ou les liens se terminant par .m3u ou .pls.</string>
+    <string name="dialog_error_message_fetch_general_hint_m3u">Astuce : Wicked Watch peut traiter uniquement les flux MP3, AAC et Ogg/Opus ou les liens se terminant par .m3u ou .pls.</string>
     <string name="dialog_error_message_fetch_general_playlist_type">Type de fichier :</string>
     <string name="dialog_error_message_fetch_general_stream_type">Type de flux :</string>
     <string name="dialog_error_message_fetch_general_file_content">Contenu du fichier :</string>
-    <string name="dialog_error_message_fetch_download">Transistor a tout essayé, mais ne pouvait pas donner sens au lien.</string>
+    <string name="dialog_error_message_fetch_download">Wicked Watch a tout essayé, mais ne pouvait pas donner sens au lien.</string>
     <string name="dialog_error_message_fetch_download_station_url">Lien de diffusion de la station :</string>
-    <string name="dialog_error_message_fetch_read">Transistor a tout essayé mais ne pouvait pas donner sens au fichier.</string>
+    <string name="dialog_error_message_fetch_read">Wicked Watch a tout essayé mais ne pouvait pas donner sens au fichier.</string>
     <string name="dialog_error_message_fetch_read_file_location">Emplacement du fichier :</string>
-    <string name="dialog_error_message_fetch_write">Transistor a tout essayé mais impossible d\'enregistrer la station.</string>
+    <string name="dialog_error_message_fetch_write">Wicked Watch a tout essayé mais impossible d\'enregistrer la station.</string>
 
     <!-- messages -->
     <string name="actioncall_message_start_here">Ajouter une station</string>
@@ -122,8 +122,8 @@
     <string name="toastalert_headphones_unplugged">Casque débranché. Lecture arrêtée.</string>
     <string name="toastalert_permission_denied">Autorisation refusée :</string>
     <string name="toastalert_station_not_found">Impossible de trouver la station.</string>
-    <string name="toastalert_stream_not_found">Transistor ne reconnaît pas cette station. Veuillez la supprimer et l\'ajouter à nouveau à l\'écran d\'accueil.</string>
-    <string name="snackbar_request_storage_access">Transistor requiert d\'accorder l\'autorisation afin d\'accéder aux données du stockage externe.</string>
+    <string name="toastalert_stream_not_found">Wicked Watch ne reconnaît pas cette station. Veuillez la supprimer et l\'ajouter à nouveau à l\'écran d\'accueil.</string>
+    <string name="snackbar_request_storage_access">Wicked Watch requiert d\'accorder l\'autorisation afin d\'accéder aux données du stockage externe.</string>
     <string name="snackbar_message_timer_set">Minuteur de veille réglé à</string>
 
     <!-- notification -->

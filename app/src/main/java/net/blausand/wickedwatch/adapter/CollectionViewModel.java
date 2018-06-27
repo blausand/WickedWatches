@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import net.blausand.wickedwatch.core.Station;
+import net.blausand.wickedwatch.core.Wicked;
 import net.blausand.wickedwatch.helpers.LogHelper;
 import net.blausand.wickedwatch.helpers.StationListHelper;
 import net.blausand.wickedwatch.helpers.TransistorKeys;
@@ -40,6 +41,7 @@ public class CollectionViewModel extends AndroidViewModel implements TransistorK
     /* Main class variables */
     private final MutableLiveData<ArrayList<Station>> mStationListLiveData;
     private final MutableLiveData<Station> mPlayerServiceStationLiveData;
+    private final MutableLiveData<Wicked> mWickedStateLiveData;
     private final MutableLiveData<Boolean> mTwoPaneLiveData;
 
     /* Constructor */
@@ -49,6 +51,7 @@ public class CollectionViewModel extends AndroidViewModel implements TransistorK
         // initialize LiveData
         mStationListLiveData = new MutableLiveData<ArrayList<Station>>();
         mPlayerServiceStationLiveData = new MutableLiveData<Station>();
+        mWickedStateLiveData = new MutableLiveData<Wicked>();
         mTwoPaneLiveData = new MutableLiveData<Boolean>();
 
         // load state from shared preferences and set live data values
@@ -91,6 +94,10 @@ public class CollectionViewModel extends AndroidViewModel implements TransistorK
     }
 
 
+    /* Getter for WickedState from (currently) NetReceiver */
+    public MutableLiveData<Wicked> getWickedState() {
+        return mWickedStateLiveData;
+    }
     /**
      * Inner class: AsyncTask that loads list in background
      */

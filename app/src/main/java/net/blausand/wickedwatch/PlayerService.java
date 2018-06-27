@@ -44,8 +44,10 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.widget.Toast;
 
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -75,6 +77,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.illposed.osc.OSCMessage;
 
 import net.blausand.wickedwatch.core.Station;
+import net.blausand.wickedwatch.core.Wicked;
 import net.blausand.wickedwatch.helpers.AudioFocusAwarePlayer;
 import net.blausand.wickedwatch.helpers.AudioFocusHelper;
 import net.blausand.wickedwatch.helpers.AudioFocusRequestCompat;
@@ -87,10 +90,14 @@ import net.blausand.wickedwatch.helpers.StationListProvider;
 import net.blausand.wickedwatch.helpers.TransistorKeys;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import static com.google.android.exoplayer2.ExoPlaybackException.TYPE_RENDERER;
@@ -115,6 +122,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
     /* Main class variables */
     private static Station mStation;
+    private static Wicked mWicked;
     private PackageValidator mPackageValidator;
     private StationListProvider mStationListProvider;
     private AudioFocusHelper mAudioFocusHelper;
@@ -129,6 +137,11 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     private static SimpleExoPlayer mPlayer;
     private static SimpleExoPlayer mPlayer2;
     private String mUserAgent;
+    protected String mNetworkId;
+
+
+    // mal mit danikula videoCache probieren:
+    public HttpProxyCacheServer mProxy;
 
     private NetReceiver netreceiver;
     //private MediaSource sample;
@@ -141,6 +154,9 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     public void onCreate() {
         super.onCreate();
 
+
+        mProxy = getProxy(this);
+
         // set up variables
         mStationMetadataReceived = false;
         mPlayerInitLock = false;
@@ -149,16 +165,12 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         // set user agent
         mUserAgent = Util.getUserAgent(this, APPLICATION_NAME);
 
-
-
-
-        //mnb: Let's create the netreceiver for OSC here :)
-        netreceiver = new NetReceiver(); //Bäh! Constructor or default constructor: BOTH.
-
         // create Wifi and wake locks
-        mWifiLock = ((WifiManager) this.getSystemService(Context.WIFI_SERVICE)).createWifiLock(WifiManager.WIFI_MODE_FULL, "Transistor_wifi_lock");
+        WifiManager mWifiMan =  (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        mWifiLock = mWifiMan.createWifiLock(WifiManager.WIFI_MODE_FULL, "Wicked_wifi_lock");
+        mNetworkId = getLocalIpAddress();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Transistor_wake_lock");
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Wicked_wake_lock");
 
         // objects used by the unfinished Android Auto implementation
         mStationListProvider = new StationListProvider();
@@ -182,22 +194,40 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         createPlayer();
         create2ndPlayer();
 
-        // MNB: WORKS...
-//        mPlayer2.prepare(sample);
-//        mPlayer2.setPlayWhenReady(true);
-
-        boolean result = netreceiver.setupOSC();
-        netreceiver.initSampler(this, mPlayer2);
-        LogHelper.d(LOG_TAG, "++++ NetReceiver Service started with ++++ "+result);
+        //mnb: Let's create the netreceiver for OSC here :)
+        netreceiver = new NetReceiver(this, mProxy, mPlayer2, mWicked); //Bäh! Constructor or default constructor: BOTH.
+        netreceiver.execute("10.10.0.139");
+        LogHelper.d(LOG_TAG, "++++ NetReceiver Service started asynchronuously ++++ " + mWifiMan.getConnectionInfo()+toString(););
 
     }
 
-    /*public void fireSample(OSCMessage message) {
+    public HttpProxyCacheServer newProxy() {
+        return new HttpProxyCacheServer(this);
+    }
 
-        mPlayer2.prepare(sample);
-        mPlayer2.setPlayWhenReady(true);
-    }*/
+    public static HttpProxyCacheServer getProxy(Context context) {
+        PlayerService app = (PlayerService) context;
+        return app.mProxy == null ? (app.mProxy = app.newProxy()) : app.mProxy;
+    }
 
+    public String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && (inetAddress.hashCode() >> 24 & 0xff) == 10) {
+                        String ip = inetAddress.getHostAddress();
+                        LogHelper.i(LOG_TAG, "***** IP="+ ip);
+                        return ip;
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            LogHelper.e(LOG_TAG, ex.toString());
+        }
+        return null;
+    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -530,9 +560,11 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
         // release player
         if (mPlayer != null) {
-            releasePlayer();
+            releasePlayer(0);
         }
-
+        if (mPlayer2 != null) {
+            releasePlayer(1);
+        }
         // cancel notification
         stopForeground(true);
     }
@@ -558,6 +590,9 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     /* Checks if playback is running */
     public static boolean isPlaybackRunning() {
         return mPlayer.getPlayWhenReady();
+    }
+    public static boolean isPlayback2Running() {
+        return mPlayer2.getPlayWhenReady();
     }
 
 
@@ -718,7 +753,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     private void createPlayer() {
 
         if (mPlayer != null) {
-            releasePlayer();
+            releasePlayer(0);
         }
 
         // create default TrackSelector
@@ -736,7 +771,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     private void create2ndPlayer() {
 
         if (mPlayer2 != null) {
-            //releasePlayer2();
+            releasePlayer(1);
         }
 
         // create default TrackSelector
@@ -773,9 +808,14 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
 
     /* Releases player */
-    private void releasePlayer() {
-        mPlayer.release();
-        mPlayer = null;
+    private void releasePlayer(int playerNo) {
+        if (playerNo == 0) {
+            mPlayer.release();
+            mPlayer = null;
+        } else {
+            mPlayer2.release();
+            mPlayer2 = null;
+        }
     }
 
 
