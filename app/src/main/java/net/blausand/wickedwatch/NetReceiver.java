@@ -1,8 +1,10 @@
 package net.blausand.wickedwatch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 /*import com.android.volley.Request;
@@ -12,10 +14,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;*/
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
@@ -25,6 +33,7 @@ import com.illposed.osc.OSCPortOut;
 //import net.blausand.wickedwatch.helpers.CacheDataSource;
 import net.blausand.wickedwatch.core.Wicked;
 import net.blausand.wickedwatch.helpers.LogHelper;
+import net.blausand.wickedwatch.helpers.TransistorKeys;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,7 +43,7 @@ import java.util.HashMap;
 //import static junit.framework.Assert.assertTrue;
 
 
-public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
+public class NetReceiver extends AsyncTask<String, Void, Void> implements TransistorKeys {
 
     /* Define log tag */
     private static final String LOG_TAG = NetReceiver.class.getSimpleName();
@@ -63,27 +72,25 @@ public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
         mContext = c;
         mProxy = proxy;
         mWicked = wicked;
+
         LogHelper.d(LOG_TAG, "++++ Entering doinBackgroudnd from Netreceiver-constructor ++++");
-//        mSamplesLoaded = null;
+        addPlayerListeners();
         // excluded from here: CashZeux.java
     }
 
     @Override
-    protected InetAddress doInBackground(String... Ips) {
+    protected Void doInBackground(String... Ips) {
         try {
             mGameServer = InetAddress.getByName(Ips[0]);
-            mHostname = InetAddress.getByName("localhost");
-            return mHostname;
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void onPostExecute(InetAddress hostname) {
+    public void onPostExecute(Void v) {
 
-//        mHostname = hostname;
-        LogHelper.d(LOG_TAG, "++++ Setting up OSC for: "+ mHostname.getHostAddress());
+        LogHelper.d(LOG_TAG, "++++ Setting up OSC for: "+ mWicked.getNetworkId());
 
         try {
             receiver = new OSCPortIn(OSCPortIn.defaultSCOSCPort());
@@ -107,8 +114,6 @@ public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
                     Float velocity = (Float)arguments[1];
                     Float panning = (Float)arguments[2];
 
-                    LogHelper.d(LOG_TAG,name);
-
                     fireSample(name, velocity, panning);
                 }
             });
@@ -120,6 +125,15 @@ public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
                     mWicked.setLevel((int)arguments[0]);
                     mWicked.setScore((int)arguments[1]);
 
+                    //MNB: NO CLUE IF THIS MAKES SENSE AT ALL:  send local broadcast
+                    Intent i = new Intent();
+                    i.setAction(ACTION_SCORE_CHANGED);
+                    i.putExtra(EXTRA_WICKED, mWicked);
+                    LocalBroadcastManager.getInstance(mContext.getApplicationContext()).sendBroadcast(i);
+                    LogHelper.v(LOG_TAG, "LocalBroadcast: ACTION_METADATA_CHANGED -> EXTRA_STATION");
+
+
+                    
                     LogHelper.i(LOG_TAG,"Level: "+mWicked.getLevel()+" Score: " + mWicked.getScore());
                 }
             });
@@ -143,8 +157,8 @@ public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
         } catch(Exception e) {
             LogHelper.e(LOG_TAG, "++++ Couldn't setup OSC In :( ++++\n"+ e.getMessage());
         }
-        //moved out SetupOSCout
 
+        setupOSCout();
     }
 
     private void setupOSCout() {
@@ -160,7 +174,7 @@ public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
     private void registerClient() {
         //export this later
         Object arguments[] = new Object[3];
-        arguments[0] = mWicked.mNetworkId;
+        arguments[0] = mWicked.getNetworkId();
         arguments[1] = "Lieselotte";
         arguments[2] = 42;
 
@@ -218,7 +232,7 @@ public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
             LogHelper.e(LOG_TAG,"++++ sample is null ++++");
             return;
         }
-        LogHelper.d(LOG_TAG,"++++ samplePlayer: "+sampl.toString());
+        LogHelper.d(LOG_TAG,"++++ samplePlayer: "+name);
 
         samplePlayer.prepare(sampl);
         samplePlayer.setVolume(velocity);
@@ -227,5 +241,63 @@ public class NetReceiver extends AsyncTask<String, Void, InetAddress> {
 
     }
 
+    private void addPlayerListeners() {
+
+        samplePlayer.addListener(new Player.DefaultEventListener() {
+            @Override
+            public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+            }
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {}
+
+            @Override
+            public void onLoadingChanged(boolean isLoading) {
+
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                switch (playbackState) {
+                    case Player.STATE_READY:
+                        LogHelper.d(LOG_TAG,"onPlayerStateChanged: Playing…");
+                        return;
+                    case Player.STATE_ENDED:
+                        LogHelper.d(LOG_TAG,"onPlayerStateChanged: Ended.");
+                        return;
+                }
+            }
+
+            @Override
+            public void onRepeatModeChanged(int repeatMode) {
+
+            }
+
+            @Override
+            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+            }
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+
+            }
+
+            @Override
+            public void onPositionDiscontinuity(int reason) {
+
+            }
+
+            @Override
+            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+                LogHelper.d(LOG_TAG,"++++ onPlaybackParametersChanged: "+ playbackParameters.toString());
+            }
+
+            @Override
+            public void onSeekProcessed() {
+
+            }
+        });
+    }
 
 }

@@ -137,7 +137,6 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     private static SimpleExoPlayer mPlayer;
     private static SimpleExoPlayer mPlayer2;
     private String mUserAgent;
-    protected String mNetworkId;
 
 
     // mal mit danikula videoCache probieren:
@@ -156,7 +155,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
 
         mProxy = getProxy(this);
-
+        mWicked = new Wicked(getLocalIpAddress());
         // set up variables
         mStationMetadataReceived = false;
         mPlayerInitLock = false;
@@ -168,7 +167,6 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         // create Wifi and wake locks
         WifiManager mWifiMan =  (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         mWifiLock = mWifiMan.createWifiLock(WifiManager.WIFI_MODE_FULL, "Wicked_wifi_lock");
-        mNetworkId = getLocalIpAddress();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Wicked_wake_lock");
 
@@ -197,7 +195,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         //mnb: Let's create the netreceiver for OSC here :)
         netreceiver = new NetReceiver(this, mProxy, mPlayer2, mWicked); //Bäh! Constructor or default constructor: BOTH.
         netreceiver.execute("10.10.0.139");
-        LogHelper.d(LOG_TAG, "++++ NetReceiver Service started asynchronuously ++++ " + mWifiMan.getConnectionInfo()+toString(););
+        LogHelper.d(LOG_TAG, "++++ NetReceiver Service started asynchronuously ++++ " + mWicked.getNetworkId());
 
     }
 
@@ -218,7 +216,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress() && (inetAddress.hashCode() >> 24 & 0xff) == 10) {
                         String ip = inetAddress.getHostAddress();
-                        LogHelper.i(LOG_TAG, "***** IP="+ ip);
+                        LogHelper.i(LOG_TAG, "Our IP is "+ ip);
                         return ip;
                     }
                 }

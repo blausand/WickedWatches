@@ -15,6 +15,7 @@
 package net.blausand.wickedwatch;
 
 import android.app.Activity;
+import android.app.Application;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -114,6 +115,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     private CollectionViewModel mCollectionViewModel;
     private BottomSheetBehavior mPlayerBottomSheetBehavior;
     private BroadcastReceiver mSleepTimerStartedReceiver;
+    private BroadcastReceiver mWickedReceiver;
     private String mCurrentStationUrl;
     private Station mCurrentStation = null;
     private Station mPlayerServiceStation;
@@ -1035,6 +1037,21 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
         };
         IntentFilter sleepTimerIntentFilter = new IntentFilter(ACTION_TIMER_RUNNING);
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(mSleepTimerStartedReceiver, sleepTimerIntentFilter);
+
+
+        //MNB: Try to stick to this pattern to update Wicked Watch stuff:
+        mWickedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+//                LogHelper.d(LOG_TAG, "Yes, Mam, we're hiring!" + intent.toString());
+                Wicked bd = (Wicked) intent.getExtras().get("WICKED");
+                mWickedSheetLevel.setText(""+bd.getLevel()); //.getInt("Level"));
+                mWickedSheetScore.setText(""+bd.getScore());
+            }
+        };
+        IntentFilter WickedIntentFilter = new IntentFilter(ACTION_SCORE_CHANGED);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mWickedReceiver, WickedIntentFilter);
+
     }
 
 

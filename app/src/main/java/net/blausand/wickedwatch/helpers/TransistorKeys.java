@@ -31,6 +31,8 @@ public interface TransistorKeys {
     String ACTION_TIMER_RUNNING = "net.blausand.wickedwatch.action.TIMER_RUNNING";
     String ACTION_TIMER_START = "net.blausand.wickedwatch.action.TIMER_START";
     String ACTION_TIMER_STOP = "net.blausand.wickedwatch.action.TIMER_STOP";
+    //and Wickeds:
+    String ACTION_SCORE_CHANGED = "net.blausand.wickedwatch.action.SCORE_CHANGED";
 
     /* EXTRAS */
     String EXTRA_PLAYBACK_STATE_PREVIOUS_STATION = "PLAYBACK_STATE_PREVIOUS_STATION";
@@ -41,6 +43,8 @@ public interface TransistorKeys {
     String EXTRA_TIMER_DURATION = "TIMER_DURATION";
     String EXTRA_TIMER_REMAINING = "TIMER_REMAINING";
     String EXTRA_ERROR_OCCURRED = "ERROR_OCCURRED";
+    //and Wickeds:
+    String EXTRA_WICKED = "WICKED";
 
     /* ARGS */
     String ARG_INFOSHEET_TITLE = "INFOSHEET_TITLE";
