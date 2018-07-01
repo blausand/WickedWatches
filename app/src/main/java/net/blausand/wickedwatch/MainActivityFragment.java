@@ -87,7 +87,6 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     /* Define log tag */
     private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-
     /* Main class variables */
     private Activity mActivity;
     private StorageHelper mStorageHelper;
@@ -206,7 +205,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
         mCollectionViewModel = ViewModelProviders.of((AppCompatActivity) mActivity).get(CollectionViewModel.class);
         mCollectionViewModel.getStationList().observe((LifecycleOwner) mActivity, createStationListObserver());
         mCollectionViewModel.getPlayerServiceStation().observe((LifecycleOwner) mActivity, createStationObserver());
-        mCollectionViewModel.getWickedState().observe((LifecycleOwner) mActivity, createWickedObserver());
+//        mCollectionViewModel.getWickedState().observe((LifecycleOwner) mActivity, createWickedObserver());
         //mnb: hook_level_here
         return mRootView;
     }
@@ -915,6 +914,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 //            v.vibrate(VibrationEffect.createOneShot(50, DEFAULT_AMPLITUDE)); // todo check if there is a support library vibrator
     }
 
+/*
     private Observer<Wicked> createWickedObserver() {
         return new Observer<Wicked>()  {
             @Override
@@ -928,6 +928,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 
         };
     }
+*/
 
     /* Creates an observer for collection of stations stored as LiveData */
     private Observer<ArrayList<Station>> createStationListObserver() {
@@ -960,6 +961,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 
 
     /* Creates an observer for station from player service stored as LiveData */
+    //mnb This is triggered before UI is painted or Playbutton it hit. Could easily be the autostart-point?
     private Observer<Station> createStationObserver() {
         return new Observer<Station>() {
             @Override
@@ -1043,15 +1045,28 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
         mWickedReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-//                LogHelper.d(LOG_TAG, "Yes, Mam, we're hiring!" + intent.toString());
-                Wicked bd = (Wicked) intent.getExtras().get("WICKED");
-                mWickedSheetLevel.setText(""+bd.getLevel()); //.getInt("Level"));
-                mWickedSheetScore.setText(""+bd.getScore());
+//                LogHelper.d(LOG_TAG, "Receiving intent !" + intent.toString());
+                Wicked wicked = (Wicked) intent.getExtras().get("WICKED");
+
+                mWickedSheetLevel.setText(""+wicked.mLevel); //.getInt("Level"));
+                mWickedSheetScore.setText(""+wicked.mScore);
             }
         };
-        IntentFilter WickedIntentFilter = new IntentFilter(ACTION_SCORE_CHANGED);
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mWickedReceiver, WickedIntentFilter);
+        IntentFilter WickedScoreIntentFilter = new IntentFilter(ACTION_SCORE_CHANGED);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mWickedReceiver, WickedScoreIntentFilter);
 
+        mWickedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+//                LogHelper.d(LOG_TAG, "Receiving intent !" + intent.toString());
+                Wicked wicked = (Wicked) intent.getExtras().get("WICKED");
+
+                mWickedSheetLevel.setText(""+wicked.mLevel); //.getInt("Level"));
+                mWickedSheetScore.setText(""+wicked.mScore);
+            }
+        };
+        IntentFilter Message = new IntentFilter(ACTION_MESSAGE_CHANGED);
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(mWickedReceiver, Message);
     }
 
 
@@ -1059,6 +1074,8 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     private void unregisterBroadcastReceivers() {
         mCollectionAdapter.unregisterBroadcastReceivers(mActivity);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mSleepTimerStartedReceiver);
+        //mnb: and the wicked
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(mWickedReceiver);
     }
 
 

@@ -1,7 +1,9 @@
 package net.blausand.wickedwatch.core;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 
 public final class Wicked implements Parcelable {
 
@@ -10,28 +12,35 @@ public final class Wicked implements Parcelable {
 
 
     /* Main class variables */
-    private int mLevel;
-    private int mScore;
+    public int mLevel;
+    public int mScore;
 
     private int mCurrentCommandId;
 
     private String mCurrentCommand;
 
-    private String mNetworkId;
+    public String mNetworkId;
+    public String mNick;
+    public int mAge;
+
     public Wicked() {
         mLevel = 1;
         mScore = 0;
+        mAge = 18;
+        mNick = "";
         mCurrentCommandId = 0;
         mCurrentCommand = "";
         mNetworkId = "";
     }
 
-    public Wicked (String networkId){
+    public Wicked (String networkId, int level, int score){
         this();
         this.mNetworkId = networkId;
+        mLevel = level;
+        mScore = score;
     }
 
-    /*** Getter ***/
+    /*** Getter ***//*
     public int getLevel() { return mLevel; }
 
     public int getScore() {
@@ -50,7 +59,7 @@ public final class Wicked implements Parcelable {
         return mNetworkId;
     }
 
-    /*** Setter ***/
+    *//*** Setter ***//*
     public void setLevel(int level) {
         this.mLevel = level;
     }
@@ -69,7 +78,7 @@ public final class Wicked implements Parcelable {
 
     public void setNetworkId(String networkId) {
         this.mNetworkId = networkId;
-    }
+    }*/
 
     /*** Implementations for iParcelable ***/
     @Override
@@ -104,4 +113,6 @@ public final class Wicked implements Parcelable {
             return new Wicked[size];
         }
     };
+
+//    public String getNick() { return mNick; }
 }

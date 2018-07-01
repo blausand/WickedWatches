@@ -155,7 +155,9 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
 
         mProxy = getProxy(this);
-        mWicked = new Wicked(getLocalIpAddress());
+        int lvl = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(PREF_WICKED_LEVEL, 1);
+        int scor = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(PREF_WICKED_SCORE, 0);
+        mWicked = new Wicked(getLocalIpAddress(), lvl, scor);
         // set up variables
         mStationMetadataReceived = false;
         mPlayerInitLock = false;
@@ -194,8 +196,9 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
         //mnb: Let's create the netreceiver for OSC here :)
         netreceiver = new NetReceiver(this, mProxy, mPlayer2, mWicked); //Bäh! Constructor or default constructor: BOTH.
+
         netreceiver.execute("10.10.0.139");
-        LogHelper.d(LOG_TAG, "++++ NetReceiver Service started asynchronuously ++++ " + mWicked.getNetworkId());
+        LogHelper.d(LOG_TAG, "++++ NetReceiver Service started asynchronuously ++++ " + mWicked.mNetworkId);
 
     }
 
@@ -961,6 +964,16 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
             editor.putString(PREF_STATION_URL, mStation.getStreamUri().toString());
             editor.putString(PREF_STATION_URL_LAST, mStation.getStreamUri().toString());
         }
+
+        if (mWicked == null) {
+            LogHelper.w(LOG_TAG, "Wicked is null! Writing 'null' to Level and Score.");
+            editor.putString(PREF_WICKED_SCORE, "---");
+            editor.putString(PREF_WICKED_LEVEL, "---");
+        } else {
+            editor.putInt(PREF_WICKED_SCORE, mWicked.mScore);
+            editor.putInt(PREF_WICKED_LEVEL, mWicked.mLevel);
+        }
+
         editor.apply();
         LogHelper.v(LOG_TAG, "Saving state.");
     }

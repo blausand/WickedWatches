@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
@@ -35,7 +36,14 @@ import net.blausand.wickedwatch.core.Wicked;
 import net.blausand.wickedwatch.helpers.LogHelper;
 import net.blausand.wickedwatch.helpers.TransistorKeys;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,10 +58,10 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
 
     private Context mContext;
     private InetAddress mHostname;
-//    private String mNetworkId;
+//    private String ;
     //private SoundAdapter mAdapter = null;
 
-    private static HashMap<String, MediaSource> mSamples;
+    private static HashMap<String, MediaSource> mSamples = new HashMap<String, MediaSource>();
     //FileOutputStream outputStream;
 
     public SimpleExoPlayer samplePlayer;
@@ -73,13 +81,15 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
         mProxy = proxy;
         mWicked = wicked;
 
-        LogHelper.d(LOG_TAG, "++++ Entering doinBackgroudnd from Netreceiver-constructor ++++");
+
+        LogHelper.d(LOG_TAG, "++++ Netreceiver-constructor: Entering addPlayerListeners() ++++");
         addPlayerListeners();
         // excluded from here: CashZeux.java
     }
 
     @Override
     protected Void doInBackground(String... Ips) {
+
         try {
             mGameServer = InetAddress.getByName(Ips[0]);
         } catch (UnknownHostException e) {
@@ -90,7 +100,7 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
 
     public void onPostExecute(Void v) {
 
-        LogHelper.d(LOG_TAG, "++++ Setting up OSC for: "+ mWicked.getNetworkId());
+        LogHelper.d(LOG_TAG, "++++ Setting up OSC for: "+ mWicked.mNetworkId);
 
         try {
             receiver = new OSCPortIn(OSCPortIn.defaultSCOSCPort());
@@ -102,7 +112,7 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
                     for(Object arg : arguments){
                         urls.add((String) arg);
                     }
-                    /*mSamplesLoaded =*/
+                    /*mIsSamplesLoaded =1*/
                     loadSamples(urls);
                 }
             });
@@ -110,6 +120,8 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
                 public void acceptMessage(java.util.Date time, OSCMessage message) {
                     Object[] arguments = message.getArguments();
                     //TODO: Make this safe, please.
+                    if (arguments.length < 3){
+                    }
                     String name = (String)arguments[0];
                     Float velocity = (Float)arguments[1];
                     Float panning = (Float)arguments[2];
@@ -122,19 +134,19 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
                 public void acceptMessage(java.util.Date time, OSCMessage message) {
                     Object[] arguments = message.getArguments();
                     //TODO: Make this safe, please.
-                    mWicked.setLevel((int)arguments[0]);
-                    mWicked.setScore((int)arguments[1]);
+                    mWicked.mLevel = (int)arguments[0];
+                    mWicked.mScore = (int)arguments[1];
 
                     //MNB: NO CLUE IF THIS MAKES SENSE AT ALL:  send local broadcast
                     Intent i = new Intent();
                     i.setAction(ACTION_SCORE_CHANGED);
                     i.putExtra(EXTRA_WICKED, mWicked);
                     LocalBroadcastManager.getInstance(mContext.getApplicationContext()).sendBroadcast(i);
-                    LogHelper.v(LOG_TAG, "LocalBroadcast: ACTION_METADATA_CHANGED -> EXTRA_STATION");
+                    LogHelper.v(LOG_TAG, "LocalBroadcast: ACTION_SCORE_CHANGED -> EXTRA_WICKED");
 
 
-                    
-                    LogHelper.i(LOG_TAG,"Level: "+mWicked.getLevel()+" Score: " + mWicked.getScore());
+
+                    LogHelper.i(LOG_TAG,"Level: "+mWicked.mLevel+" Score: " + mWicked.mScore);
                 }
             });
 
@@ -164,19 +176,21 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
     private void setupOSCout() {
         try {
             sender = new OSCPortOut(mGameServer, 55555); //todo: use settings
-            registerClient();
-
+            loginClient();
         } catch (Exception e) {
             LogHelper.e(LOG_TAG, "++++ Couldn't setup OSC Out :( ++++\n" + e.toString());
         }
     }
 
-    private void registerClient() {
+    /****** OSC sender functions ******/
+
+    private void loginClient() { //todo: initial r egisterClient()
+
         //export this later
         Object arguments[] = new Object[3];
-        arguments[0] = mWicked.getNetworkId();
-        arguments[1] = "Lieselotte";
-        arguments[2] = 42;
+        arguments[0] = mWicked.mNetworkId;
+        arguments[1] = mWicked.mNick;
+        arguments[2] = mWicked.mAge;
 
         OSCMessage msg = new OSCMessage("/register", arguments);
         try {
@@ -184,6 +198,22 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
         } catch(Exception e) {
             Toast.makeText(mContext,"Registration with GameServer failed :(",Toast.LENGTH_LONG);
             LogHelper.e(LOG_TAG, "Registration with GameServer failed :( \n"+ e.toString());
+        } //todo: Check Network and try again
+    }
+
+    /* mnb make this general sendOSC with more params*/
+    private void sendError(String err) {
+        //export this later
+        Toast.makeText(mContext,"Leider ist jetzt ein Fehler passiert :(\n" + err,Toast.LENGTH_LONG);
+        Object arguments[] = new Object[3];
+        arguments[0] = mWicked.mNetworkId;
+        arguments[1] = err;
+
+        OSCMessage msg = new OSCMessage("/error", arguments);
+        try {
+            sender.send(msg);
+        } catch(Exception e) {
+            LogHelper.e(LOG_TAG, "Sending Error via OSC failed :( \n"+ e.toString());
         }
     }
 
@@ -196,38 +226,83 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
         DefaultDataSourceFactory factory = new DefaultDataSourceFactory(mContext, "CommandSampler");
         ExtractorMediaSource.Factory mediaSourceFactory = new ExtractorMediaSource.Factory(factory);
 
-        mSamples = new HashMap<String, MediaSource>();
+        int perc = 0;
+        if (mSamples == null) {
+            mSamples = new HashMap<String, MediaSource>();
+        }
         Uri uri;
         final String url = "http://elon/";
 
+        samplePlayer.setPlayWhenReady(false);
         for (String smplname : sampleNames) {
             //TODO: Handle publishProgress() and isCancelled() here!
+            if (!mSamples.containsKey(smplname)) { //skip existing samples here
 
-            //mnb: Danikula VideoCache
-            String proxyUrl = mProxy.getProxyUrl(url+"wickedSounds/"+smplname);
-            uri = Uri.parse(proxyUrl);
+                //mnb: Danikula VideoCache
+                String proxyUrl = mProxy.getProxyUrl(url+"wickedSounds/"+smplname+".mp3");
+                uri = Uri.parse(proxyUrl);
 
-            sample = mediaSourceFactory.createMediaSource(uri);
+                sample = mediaSourceFactory.createMediaSource(uri);
 
-            if (sample!=null) {
-                //make it download:
-                LogHelper.d(LOG_TAG,"++ downloading sample: "+smplname);
-                samplePlayer.prepare(sample);
-                LogHelper.d(LOG_TAG,"++ done.");
+                if (sample!=null) {
+                    //make it download:
+                    LogHelper.d(LOG_TAG,"++ downloading sample: "+smplname);
+                    perc = 0;
+                    samplePlayer.prepare(sample);
+//              while (perc < 95){
+//                    perc = samplePlayer.getBufferedPercentage();
+//                LogHelper.d("Is loading:" + //samplePlayer.isLoading()); //perc+"%");
+//              }
 
-                mSamples.put(smplname, sample);
-                sample = null;
-            } else {
-                LogHelper.e(LOG_TAG,"++++ Failed sample download: "+smplname);
+                    LogHelper.d(LOG_TAG,"++ done.");
+
+                    mSamples.put(smplname, sample);
+                    sample = null;
+                } else {
+                    LogHelper.e(LOG_TAG,"++++ Failed sample download: "+smplname);
+                }
             }
 
         }
         LogHelper.d(LOG_TAG,"++++ Added "+mSamples.size()+" samples :)");
+        //TODO: Load text file for display.
+        DownloadFiles();
 
     }
 
+    public void DownloadFiles(){
+        try {
+            URL u = new URL("http://elon/ansagen_master_02.xml");
+            InputStream is = u.openStream();
+
+            DataInputStream dis = new DataInputStream(is);
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            FileOutputStream fos = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + "/Android/data/net.blausand.wickedwatch/files/ansagen.xml"));
+            while ((length = dis.read(buffer))>0) {
+                fos.write(buffer, 0, length);
+            }
+            fos.flush();
+            fos.close();
+
+        } catch (MalformedURLException mue) {
+            LogHelper.e(LOG_TAG,"SYNC getUpdate | malformed url error:\n" + mue);
+        } catch (IOException ioe) {
+            LogHelper.e(LOG_TAG,"SYNC getUpdate | io error:\n"+ ioe);
+        } catch (SecurityException se) {
+            LogHelper.e(LOG_TAG,"SYNC getUpdate | security error:\n"+ se);
+        }
+    }
+
+
     public void fireSample(String name, float velocity, float panning) {
-        MediaSource sampl = mSamples.get(name);
+        if (!mSamples.containsKey(name)){
+            sendError("Schlimm! Anweisung konnte nicht abgespielt werden: " + name);
+            return;
+        }
+        MediaSource sampl = mSamples.get(name); //sehr interessant: Wird nur bei ungepufferten Audios ausgeführt! Kein Break bei gepufferten.
         if (sampl==null){
             LogHelper.e(LOG_TAG,"++++ sample is null ++++");
             return;

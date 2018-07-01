@@ -33,6 +33,7 @@ public interface TransistorKeys {
     String ACTION_TIMER_STOP = "net.blausand.wickedwatch.action.TIMER_STOP";
     //and Wickeds:
     String ACTION_SCORE_CHANGED = "net.blausand.wickedwatch.action.SCORE_CHANGED";
+    String ACTION_MESSAGE_CHANGED = "net.blausand.wickedwatch.action.MESSAGE_CHANGED";
 
     /* EXTRAS */
     String EXTRA_PLAYBACK_STATE_PREVIOUS_STATION = "PLAYBACK_STATE_PREVIOUS_STATION";
@@ -60,6 +61,9 @@ public interface TransistorKeys {
     String PREF_STATION_URI_SELECTED = "prefStationUriSelected";
     String PREF_TIMER_RUNNING = "prefTimerRunning";
     String PREF_TWO_PANE = "prefTwoPane";
+    //
+    String PREF_WICKED_SCORE = "prefWickedScore";
+    String PREF_WICKED_LEVEL = "prefWickedLevel";
 
     /* RESULTS */
     String RESULT_FETCH_STATUS = "FETCH_STATUS";

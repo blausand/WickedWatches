@@ -24,7 +24,7 @@ allprojects {
     project.ext {
         applicationId = 'net.blausand.wickedwatch'
         versionCode = 57
-        versionName = '3.0.7'
+        versionName = '0.5.2'
         minSdkVersion = 19
         compileSdkVersion = 27
         targetSdkVersion = 27
