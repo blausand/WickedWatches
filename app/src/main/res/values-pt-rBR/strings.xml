@@ -122,7 +122,7 @@
     <string name="notification_channel_playback_name">Controles de reprodução</string>
     <string name="notification_channel_playback_description">Controles de reprodução, logo da estação e informações de reprodução.</string>
 
-    <string name="onboarding_app_description">Aplicativo de rádio</string>
-    <string name="onboarding_app_get_started">Começar</string>
+    <string name="onboarding_app_purpose">Aplicativo de rádio</string>
+    <string name="onboarding_app_choose_name">Começar</string>
 
     </resources>

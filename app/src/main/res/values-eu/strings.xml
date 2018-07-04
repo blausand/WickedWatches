@@ -135,8 +135,8 @@
     <string name="notification_channel_playback_description">Erreprodukzio kontrolak, irratiaren logoa eta unean jotzen ari denaren informazioa.</string>
 
     <!-- onboarding -->
-    <string name="onboarding_app_description">Irrati aplikazioa</string>
-    <string name="onboarding_app_get_started">Hasi</string>
+    <string name="onboarding_app_purpose">Irrati aplikazioa</string>
+    <string name="onboarding_app_choose_name">Hasi</string>
 
     <!-- Version 3 of Wickedwatch removes the screens infosheet_howto and infosheet_about.
     The last version containing those strings is v2.3.7

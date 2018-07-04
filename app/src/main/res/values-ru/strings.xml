@@ -135,8 +135,8 @@
     <string name="notification_channel_playback_description">Элементы управления, логотип станции и информация о воспроизведении.</string>
 
     <!-- onboarding -->
-    <string name="onboarding_app_description">Радиоприёмник</string>
-    <string name="onboarding_app_get_started">Начать</string>
+    <string name="onboarding_app_purpose">Радиоприёмник</string>
+    <string name="onboarding_app_choose_name">Начать</string>
 
     <!-- Version 3 of Wickedwatch removes the screens infosheet_howto and infosheet_about.
     The last version containing those strings is v2.3.7

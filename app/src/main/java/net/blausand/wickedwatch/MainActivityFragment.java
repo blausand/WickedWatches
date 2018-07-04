@@ -15,7 +15,6 @@
 package net.blausand.wickedwatch;
 
 import android.app.Activity;
-import android.app.Application;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -53,6 +52,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -125,6 +125,14 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     //mnb: and some for wicked watches:
     private TextView mWickedSheetLevel;
     private TextView mWickedSheetScore;
+    private TextView mWickedSheetMessage;
+    private Button mWickedConfirmButton;
+    private Button mLetsGoButton;
+    private Button mYesButton;
+    private int mWickedLevel;
+    private int mWickedScore;
+    private TextView mOnboardingNick;
+
 
     /* Constructor (default) */
     public MainActivityFragment() {
@@ -180,6 +188,15 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
         //mnb: and those for wicked views:
         mWickedSheetLevel = mRootView.findViewById(R.id.Level);
         mWickedSheetScore = mRootView.findViewById(R.id.Score);
+        mWickedSheetMessage = mRootView.findViewById(R.id.Ansage);
+        mWickedConfirmButton = mRootView.findViewById(R.id.wicked_button_confirm);
+        mLetsGoButton = mRootView.findViewById(R.id.onboarding_letsgo);
+        mYesButton = mRootView.findViewById(R.id.wicked_button_yes);
+        mOnboardingNick = mRootView.findViewById(R.id.onboarding_nick);
+
+        mWickedSheetLevel.setText(String.valueOf(mWickedLevel));
+        mWickedSheetScore.setText(String.valueOf(mWickedScore));
+        mWickedSheetMessage.setText("Wait…");
 
         // set up RecyclerView
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -271,7 +288,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     }
 
 
-    /* Updates the player UI after delete */
+    /*mnb: maybe here? Updates the player UI after delete */
     public void updatePlayerAfterDelete(Station station) {
         mCurrentStation = station;
         setupPlayer(station);
@@ -289,7 +306,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     }
 
 
-    /* Refreshes list of stations - used by pull to refresh */
+    /*mnb: KILL ** Refreshes list of stations - used by pull to refresh */
     private void refreshList() {
         // manually refresh list of stations (force reload) - useful when editing playlist files manually outside of Transistor
         ArrayList<Station> newStationList = StationListHelper.loadStationListFromStorage(mActivity);
@@ -300,7 +317,8 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     }
 
 
-    /* Handles tap on streaming link */
+    /*mnb: this doesn't play it, only loads it
+     **** Handles tap on streaming link */
     private void handleStreamingLink(Intent intent) {
         mNewStationUri = intent.getData();
 
@@ -325,7 +343,8 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     }
 
 
-    /* start player service using intent */
+    /*mnb: We're already jumping in herre on LetsGo
+     ****  start player service using intent */
     private void startPlayback(Station station) {
         Intent intent = new Intent(mActivity, PlayerService.class);
         intent.setAction(ACTION_PLAY);
@@ -391,6 +410,34 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 
     /* Attaches tap listeners to buttons */
     private void setAdapterListeners() {
+        //mnb: Wicked Listeners first :))
+        mWickedConfirmButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View view) {
+                Toast.makeText(mActivity, "onClick", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mLetsGoButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View view) {
+                Toast.makeText(mActivity, "onClick", Toast.LENGTH_SHORT).show();
+                mOnboardingLayout.setVisibility(View.GONE);
+                mWickedMainLayout.setVisibility(View.VISIBLE);
+                //MNB: todo: DIRTY! SEtup player properly later
+//                setupPlayer(mCurrentStation);
+//                startPlayback(mCurrentStation);
+            }
+        });
+
+        mYesButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View view) {
+                Toast.makeText(mActivity, "onClick", Toast.LENGTH_SHORT).show();
+                mOnboardingLayout.setVisibility(View.GONE);
+                mWickedMainLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+
         // tap on station list
         mCollectionAdapter.setCollectionAdapterListener(new CollectionAdapter.CollectionAdapterListener() {
             @Override
@@ -561,6 +608,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
                 // show player & hide onboarding
                 if (mPlayerBottomSheetBehavior.getPeekHeight() == 0) {
                     mPlayerBottomSheetBehavior.setPeekHeight(convertDpToPx(PLAYER_SHEET_PEEK_HEIGHT));
+                    mWickedMainLayout.setVisibility(View.VISIBLE);
                     mOnboardingLayout.setVisibility(View.GONE);
                 }
 
@@ -572,6 +620,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 
             } else {
                 // hide player & show onboarding
+                mWickedMainLayout.setVisibility(View.GONE);
                 mPlayerBottomSheetBehavior.setPeekHeight(0);
                 minimizePlayer();
                 mOnboardingLayout.setVisibility(View.VISIBLE);
@@ -826,6 +875,8 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     private void loadAppState(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         mCurrentStationUrl = settings.getString(PREF_STATION_URI_SELECTED, null);
+        mWickedLevel = settings.getInt(PREF_WICKED_LEVEL, 1);
+        mWickedScore = settings.getInt(PREF_WICKED_SCORE, 0);
         mSleepTimerRunning = settings.getBoolean(PREF_TIMER_RUNNING, false);
         LogHelper.v(LOG_TAG, "Loading state.");
     }
@@ -834,9 +885,15 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
     /* Saves app state to SharedPreferences */
     private void saveAppState(Context context) {
         if (mCurrentStation != null) {
+
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = settings.edit();
-            editor.putString(PREF_STATION_URI_SELECTED, mCurrentStation.getStreamUri().toString());
+            editor.putString(PREF_STATION_URI_SELECTED,
+                    mCurrentStation.getStreamUri().toString());
+            editor.putInt(PREF_WICKED_LEVEL,
+                    Integer.parseInt(mWickedSheetLevel.getText().toString()));
+            editor.putInt(PREF_WICKED_SCORE,
+                    Integer.parseInt(mWickedSheetLevel.getText().toString()));
             editor.apply();
             LogHelper.v(LOG_TAG, "Saving state.");
         }
@@ -914,7 +971,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
 //            v.vibrate(VibrationEffect.createOneShot(50, DEFAULT_AMPLITUDE)); // todo check if there is a support library vibrator
     }
 
-/*
+/* //This would be triggered if a new wicked object was created. We don't need this.
     private Observer<Wicked> createWickedObserver() {
         return new Observer<Wicked>()  {
             @Override
@@ -1016,6 +1073,7 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
                 }
             }
         };
+
     }
 
 
@@ -1047,12 +1105,22 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
             public void onReceive(Context context, Intent intent) {
 //                LogHelper.d(LOG_TAG, "Receiving intent !" + intent.toString());
                 Wicked wicked = (Wicked) intent.getExtras().get("WICKED");
+                if (intent.hasCategory("Score")) {
+                LogHelper.d(LOG_TAG, "Category score detected !" + intent.toString());
 
-                mWickedSheetLevel.setText(""+wicked.mLevel); //.getInt("Level"));
-                mWickedSheetScore.setText(""+wicked.mScore);
+                }
+                if (intent.hasExtra("Score")) {
+                    mWickedSheetScore.setText(""+wicked.mScore);
+                } else if (intent.hasExtra("Level")) {
+                    mWickedSheetLevel.setText(""+wicked.mLevel);
+                } else if (intent.hasExtra("Message")) {
+                }
+//                mWickedSheetNick.setText(""+wicked.mNick);
+
             }
         };
         IntentFilter WickedScoreIntentFilter = new IntentFilter(ACTION_SCORE_CHANGED);
+//        WickedScoreIntentFilter.addAction(ACTION_LEVEL_CHANGED); //< wants String, i have only android.content
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(mWickedReceiver, WickedScoreIntentFilter);
 
         mWickedReceiver = new BroadcastReceiver() {
@@ -1060,9 +1128,8 @@ public final class MainActivityFragment extends Fragment implements TransistorKe
             public void onReceive(Context context, Intent intent) {
 //                LogHelper.d(LOG_TAG, "Receiving intent !" + intent.toString());
                 Wicked wicked = (Wicked) intent.getExtras().get("WICKED");
+                mWickedSheetMessage.setText(context.getResources().getIdentifier(wicked.mCurrentCommand, "string", context.getPackageName())); //.mCurrentCommandId;
 
-                mWickedSheetLevel.setText(""+wicked.mLevel); //.getInt("Level"));
-                mWickedSheetScore.setText(""+wicked.mScore);
             }
         };
         IntentFilter Message = new IntentFilter(ACTION_MESSAGE_CHANGED);

@@ -135,8 +135,8 @@
     <string name="notification_channel_playback_description">再生コントロール、局のロゴ、今再生中の情報。</string>
 
     <!-- onboarding -->
-    <string name="onboarding_app_description">Radio App</string>
-    <string name="onboarding_app_get_started">Get started</string>
+    <string name="onboarding_app_purpose">Radio App</string>
+    <string name="onboarding_app_choose_name">Get started</string>
 
     <!-- Version 3 of Wicked Watch removes the screens infosheet_howto and infosheet_about.
     The last version containing those strings is v2.3.7

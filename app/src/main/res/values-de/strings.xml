@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <!-- activities -->
-    <string name="app_name">Wicked Watch</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
+    <string name="app_name">Wizards &amp; Watches</string> <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
 
     <!-- app shortcuts -->
     <string name="shortcut_last_station_short_label">Letzter Sender</string>
@@ -9,8 +9,8 @@
     <string name="shortcut_last_station_disabled_message">Shortcut für Wiedergabe des letzten Senders deaktiviert.</string>
 
     <!-- menu entries -->
-    <string name="menu_about">Über Wicked Watch</string>
-    <string name="menu_howto">Wie Wicked Watch funktioniert</string>
+    <string name="menu_about">Über Wizards &amp; Watches</string>
+    <string name="menu_howto">Wie diese App funktioniert</string>
     <string name="menu_refresh">Liste aktualisieren</string>
     <string name="menu_timer">Sleeptimer</string>
     <string name="menu_icon">Symbol ändern</string>
@@ -20,11 +20,11 @@
     <string name="menu_shortcut">Auf Startbildschirm speichern</string>
 
     <!-- headers -->
-    <string name="header_about">Über Wicked Watch</string>
-    <string name="header_howto">Wie Wicked Watch funktioniert</string>
+    <string name="header_about">Über Wizards &amp; Watches</string>
+    <string name="header_howto">How this app works</string>
 
     <!-- descriptions -->
-    <string name="descr_app_icon">App-Symbol in der Form eines alten Radios</string>
+    <string name="descr_app_icon">App-Symbol in der Form einer Armbnduhr</string>
     <string name="descr_arrow_upward">Nach oben weisender Pfeil</string>
     <string name="descr_station_options_button">Optionen für Radiosender anzeigen</string>
     <string name="descr_station_icon">Logo des Radiosenders</string>
@@ -62,6 +62,8 @@
     <!-- dialogs -->
     <string name="dialog_generic_button_okay">Bestätigen</string>
     <string name="dialog_generic_button_cancel">Abbrechen</string>
+    <string name="dialog_generic_button_yes">Ja</string>
+    <string name="dialog_generic_button_no">Nein</string>
     <string name="dialog_add_station_button">Hinzufügen</string>
     <string name="dialog_add_station_input_hint">Streaming-Adresse einfügen</string>
     <string name="dialog_add_station_message">Neuen Sender hinzufügen</string>
@@ -85,15 +87,15 @@
     <string name="dialog_error_title_fetch_read">Lese-Problem</string>
     <string name="dialog_error_title_fetch_write">Speicher-Problem</string>
     <string name="dialog_error_message_fetch_general_external_storage">Externer Speicher:</string>
-    <string name="dialog_error_message_fetch_general_hint_m3u">Hinweis: Wicked Watch kann nur Audiostreams in den Formaten MP3, AAC und Ogg/Opus oder Links mit der Endung .m3u oder .pls verarbeiten.</string>
+    <string name="dialog_error_message_fetch_general_hint_m3u">Hinweis: Wizards &amp; Watches kann nur Audiostreams in den Formaten MP3, AAC und Ogg/Opus oder Links mit der Endung .m3u oder .pls verarbeiten.</string>
     <string name="dialog_error_message_fetch_general_playlist_type">MIME-Type der Datei:</string>
     <string name="dialog_error_message_fetch_general_stream_type">MIME-Type des Streams:</string>
     <string name="dialog_error_message_fetch_general_file_content">Inhalt der Datei:</string>
-    <string name="dialog_error_message_fetch_download">Wicked Watch konnte diesen Link nicht verarbeiten</string>
+    <string name="dialog_error_message_fetch_download">Wizards &amp; Watches konnte diesen Link nicht verarbeiten</string>
     <string name="dialog_error_message_fetch_download_station_url">Streaming-Adresse des Radiosenders:</string>
-    <string name="dialog_error_message_fetch_read">Wicked Watch konnte diese Datei nicht verarbeiten</string>
+    <string name="dialog_error_message_fetch_read">Wizards &amp; Watches konnte diese Datei nicht verarbeiten</string>
     <string name="dialog_error_message_fetch_read_file_location">Speicherort:</string>
-    <string name="dialog_error_message_fetch_write">Wicked Watch hat es versucht, kann diese Datei aber nicht speichern.</string>
+    <string name="dialog_error_message_fetch_write">Wizards &amp; Watches hat es versucht, kann diese Datei aber nicht speichern.</string>
 
     <!-- messages -->
     <string name="actioncall_message_start_here">Einen neuen Sender hinzufügen</string>
@@ -122,8 +124,8 @@
     <string name="toastalert_headphones_unplugged">Kopfhörer entfernt. Wiedergabe gestoppt.</string>
     <string name="toastalert_permission_denied">Fehlende Berechtigung:</string>
     <string name="toastalert_station_not_found">Sender kann nicht gefunden werden.</string>
-    <string name="toastalert_stream_not_found">Wicked Watch kann mit diesem Sender nichts anfangen. Bitte löschen und erneut auf der Startseite hinzufügen.</string>
-    <string name="snackbar_request_storage_access">Wicked Watch benötigt Lese-Rechte, um auf Dateien auf dem externen Speicher zugreifen zu können.</string>
+    <string name="toastalert_stream_not_found">Wizards &amp; Watches kann mit diesem Sender nichts anfangen. Bitte löschen und erneut auf der Startseite hinzufügen.</string>
+    <string name="snackbar_request_storage_access">Wizards &amp; Watches benötigt Lese-Rechte, um auf Dateien auf dem externen Speicher zugreifen zu können.</string>
     <string name="snackbar_message_timer_set">Sleeptimer eingestellt auf</string>
 
     <!-- notification -->
@@ -135,11 +137,10 @@
     <string name="notification_channel_playback_description">Playback-Steuerung, Sender Logo und Infos über Programminformationen.</string>
 
     <!-- onboarding -->
-    <string name="onboarding_app_description">Radio App</string>
-    <string name="onboarding_app_get_started">Jetzt starten</string>
-
-    <!-- Version 3 of Wicked watch removes the screens infosheet_howto and infosheet_about.
-    The last version containing those strings is v2.3.7
-    https://github.com/y20k/transistor/tree/v2.3.7/app/src/main/res -->
+    <string name="onboarding_app_purpose">Ein choreografisches Sozialexperiment</string>
+    <string name="onboarding_app_choose_name">Wie möchtest du heißen?</string>
+    <string name="onboarding_app_description">Erlebe den animalischen Rausch des Belohnungszentrums, und wo genau dein Freiheitsbedürfnis an die Grenzen deines Ego stößt.</string>
+    <string name="onboarding_credits_left">Idee &amp; Code:\nStimme &amp; Choreografie:\nKomposition &amp; live set:</string>
+    <string name="onboarding_letsgo">Los geht\'s!</string>
 
 </resources>

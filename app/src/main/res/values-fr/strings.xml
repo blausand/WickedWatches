@@ -135,8 +135,8 @@
     <string name="notification_channel_playback_description">Commandes de lecture, logo de la station et informations de lecture.</string>
 
     <!-- onboarding -->
-    <string name="onboarding_app_description">Appli Radio</string>
-    <string name="onboarding_app_get_started">Démarrer</string>
+    <string name="onboarding_app_purpose">Appli Radio</string>
+    <string name="onboarding_app_choose_name">Démarrer</string>
 
     <!-- Version 3 of Wickedwatch removes the screens infosheet_howto and infosheet_about.
     The last version containing those strings is v2.3.7

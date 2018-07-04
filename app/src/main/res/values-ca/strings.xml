@@ -135,8 +135,8 @@
     <string name="notification_channel_playback_description">Controls de reproducció, logo de la emissora i informació de reproducció actual.</string>
 
     <!-- onboarding -->
-    <string name="onboarding_app_description">Ràdio APP</string>
-    <string name="onboarding_app_get_started">Començar</string>
+    <string name="onboarding_app_purpose">Ràdio APP</string>
+    <string name="onboarding_app_choose_name">Començar</string>
 
     <!-- Version 3 of Wickedwatch removes the screens infosheet_howto and infosheet_about.
     The last version containing those strings is v2.3.7

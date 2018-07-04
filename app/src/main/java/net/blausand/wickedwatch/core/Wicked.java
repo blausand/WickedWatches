@@ -17,7 +17,7 @@ public final class Wicked implements Parcelable {
 
     private int mCurrentCommandId;
 
-    private String mCurrentCommand;
+    public String mCurrentCommand;
 
     public String mNetworkId;
     public String mNick;
@@ -33,9 +33,8 @@ public final class Wicked implements Parcelable {
         mNetworkId = "";
     }
 
-    public Wicked (String networkId, int level, int score){
+    public Wicked (int level, int score){
         this();
-        this.mNetworkId = networkId;
         mLevel = level;
         mScore = score;
     }
@@ -74,11 +73,11 @@ public final class Wicked implements Parcelable {
 
     public void setCurrentCommand(String command) {
         this.mCurrentCommand = command;
-    }
+    }*/
 
     public void setNetworkId(String networkId) {
         this.mNetworkId = networkId;
-    }*/
+    }
 
     /*** Implementations for iParcelable ***/
     @Override

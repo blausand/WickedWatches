@@ -157,7 +157,9 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         mProxy = getProxy(this);
         int lvl = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(PREF_WICKED_LEVEL, 1);
         int scor = PreferenceManager.getDefaultSharedPreferences(getApplication()).getInt(PREF_WICKED_SCORE, 0);
-        mWicked = new Wicked(getLocalIpAddress(), lvl, scor);
+        mWicked = new Wicked(lvl, scor);
+        LogHelper.d(LOG_TAG, "++ Could send to Ui these saved Level/Score Prefs: ++ " + lvl + " | " + scor);
+
         // set up variables
         mStationMetadataReceived = false;
         mPlayerInitLock = false;
@@ -167,7 +169,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         mUserAgent = Util.getUserAgent(this, APPLICATION_NAME);
 
         // create Wifi and wake locks
-        WifiManager mWifiMan =  (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        WifiManager mWifiMan = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         mWifiLock = mWifiMan.createWifiLock(WifiManager.WIFI_MODE_FULL, "Wicked_wifi_lock");
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Wicked_wake_lock");
@@ -211,15 +213,15 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         return app.mProxy == null ? (app.mProxy = app.newProxy()) : app.mProxy;
     }
 
-    public String getLocalIpAddress() {
+    /*public String getLocalIpAddress() {
         try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress() && (inetAddress.hashCode() >> 24 & 0xff) == 10) {
                         String ip = inetAddress.getHostAddress();
-                        LogHelper.i(LOG_TAG, "Our IP is "+ ip);
+                        LogHelper.i(LOG_TAG, "Our IP is " + ip);
                         return ip;
                     }
                 }
@@ -228,7 +230,8 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
             LogHelper.e(LOG_TAG, ex.toString());
         }
         return null;
-    }
+    }*/
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -291,7 +294,6 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         // default return value for media playback
         return START_STICKY;
     }
-
 
 
     @Override
@@ -592,6 +594,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     public static boolean isPlaybackRunning() {
         return mPlayer.getPlayWhenReady();
     }
+
     public static boolean isPlayback2Running() {
         return mPlayer2.getPlayWhenReady();
     }
@@ -606,7 +609,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     /* Starts playback */
     private void startPlayback() {
         // check for null - can happen after a crash during playback
-        if (mStation == null || mPlayer == null ||  mSession == null) {
+        if (mStation == null || mPlayer == null || mSession == null) {
             LogHelper.e(LOG_TAG, "Unable to start playback. An error occurred. Station is probably NULL.");
             saveAppState();
             // send local broadcast: playback stopped
@@ -653,7 +656,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
             LogHelper.v(LOG_TAG, "Starting playback. Station name:" + mStation.getStationName());
 
             // update MediaSession
-            updateMediaSession(mStation,true);
+            updateMediaSession(mStation, true);
 
             // put up notification
             NotificationHelper.show(this, mSession, mStation);
@@ -991,7 +994,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
     /**
      * Inner class: Handles callback from active media session ***
      */
-    private final class MediaSessionCallback extends MediaSessionCompat.Callback  {
+    private final class MediaSessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
             // start playback
@@ -1025,7 +1028,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
         @Override
         public void onPlayFromSearch(String query, Bundle extras) {
             // handle requests to begin playback from a search query (eg. Assistant, Android Auto, etc.)
-            LogHelper.i(LOG_TAG, "playFromSearch  query=" + query + " extras="+ extras);
+            LogHelper.i(LOG_TAG, "playFromSearch  query=" + query + " extras=" + extras);
 
             if (TextUtils.isEmpty(query)) {
                 // user provided generic string e.g. 'Play music'
@@ -1134,10 +1137,10 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
                     contentType = contentType.substring(0, contentType.indexOf(";"));
                 }
 
-                if (Arrays.asList(CONTENT_TYPES_HLS).contains(contentType) || Arrays.asList(CONTENT_TYPES_M3U).contains(contentType) ) {
+                if (Arrays.asList(CONTENT_TYPES_HLS).contains(contentType) || Arrays.asList(CONTENT_TYPES_M3U).contains(contentType)) {
                     LogHelper.v(LOG_TAG, "HTTP Live Streaming detected.");
                     return CONNECTION_TYPE_HLS;
-                } else if (Arrays.asList(CONTENT_TYPES_MPEG).contains(contentType) || Arrays.asList(CONTENT_TYPES_AAC).contains(contentType)  || Arrays.asList(CONTENT_TYPES_OGG).contains(contentType) ) {
+                } else if (Arrays.asList(CONTENT_TYPES_MPEG).contains(contentType) || Arrays.asList(CONTENT_TYPES_AAC).contains(contentType) || Arrays.asList(CONTENT_TYPES_OGG).contains(contentType)) {
                     LogHelper.v(LOG_TAG, "Other Streaming protocol detected (MPEG, AAC, OGG).");
                     return CONNECTION_TYPE_OTHER;
                 } else {
@@ -1188,22 +1191,22 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
         @Override
         public void playerStarted() {
-            LogHelper.v(LOG_TAG, "PlayerCallback: playerStarted" );
+            LogHelper.v(LOG_TAG, "PlayerCallback: playerStarted");
         }
 
         @Override
         public void playerPCMFeedBuffer(boolean isPlaying, int audioBufferSizeMs, int audioBufferCapacityMs) {
-            LogHelper.v(LOG_TAG, "PlayerCallback: playerPCMFeedBuffer" );
+            LogHelper.v(LOG_TAG, "PlayerCallback: playerPCMFeedBuffer");
         }
 
         @Override
         public void playerStopped(int perf) {
-            LogHelper.v(LOG_TAG, "PlayerCallback: playerStopped" );
+            LogHelper.v(LOG_TAG, "PlayerCallback: playerStopped");
         }
 
         @Override
         public void playerException(Throwable t) {
-            LogHelper.v(LOG_TAG, "PlayerCallback: playerException" );
+            LogHelper.v(LOG_TAG, "PlayerCallback: playerException");
         }
 
         @Override
@@ -1236,7 +1239,7 @@ public final class PlayerService extends MediaBrowserServiceCompat implements Tr
 
         @Override
         public void playerAudioTrackCreated(AudioTrack audioTrack) {
-            LogHelper.v(LOG_TAG, "PlayerCallback: playerMetadata" );
+            LogHelper.v(LOG_TAG, "PlayerCallback: playerMetadata");
         }
     };
     /**

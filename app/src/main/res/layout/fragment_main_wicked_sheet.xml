@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/wickedmain_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="visible">
 
     <TextView
         android:id="@+id/Level"
-        android:layout_width="60dp"
+        android:layout_width="84dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:contentDescription="level"
@@ -23,8 +24,8 @@
 
     <TextView
         android:id="@+id/Score"
-        android:layout_width="92dp"
-        android:layout_height="55dp"
+        android:layout_width="84dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:inputType="number"
@@ -38,7 +39,7 @@
 
     <TextView
         android:id="@+id/Label_level"
-        android:layout_width="60dp"
+        android:layout_width="84dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
@@ -52,7 +53,7 @@
 
     <TextView
         android:id="@+id/Label_score"
-        android:layout_width="92dp"
+        android:layout_width="84dp"
         android:layout_height="18dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="20dp"
@@ -66,8 +67,7 @@
     <TextView
         android:id="@+id/Ansage"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="64dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
@@ -77,8 +77,40 @@
         android:textAppearance="@android:style/TextAppearance"
         android:textSize="18sp"
         android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Score" />
+
+    <RatingBar
+        android:id="@+id/wicked_ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:numStars="7"
+        android:stepSize="1"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Ansage" />
+
+    <Button
+        android:id="@+id/wicked_button_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onButtonConfirm"
+        android:text="@string/dialog_generic_button_okay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wicked_ratingBar" />
+
+    <Button
+        android:id="@+id/wicked_button_yes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="doButton_yes"
+        android:text="@string/dialog_generic_button_yes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Ansage" />
 </android.support.constraint.ConstraintLayout>

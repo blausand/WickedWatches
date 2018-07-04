@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
@@ -43,9 +44,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 //import static junit.framework.Assert.assertTrue;
@@ -69,7 +73,8 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
     private OSCPortIn receiver;
     private OSCPortOut sender;
     private Wicked mWicked;
-    private InetAddress mGameServer;
+    public InetAddress mGameServer;
+    public InetAddress mOurIp;
     //InetAddress server = InetAddress.getByName("M0P3D");
 
     public NetReceiver() {
@@ -90,16 +95,39 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
     @Override
     protected Void doInBackground(String... Ips) {
 
+        //see if the server is available:
         try {
             mGameServer = InetAddress.getByName(Ips[0]);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
+        //find our own IP:
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && (inetAddress.hashCode() >> 24 & 0xff) == 10) { //dirty: choose the one with IP in subnet 10.255.255.255
+                        String ip = inetAddress.getHostAddress();
+                        LogHelper.i(LOG_TAG, "Our IP is " + ip);
+                        mOurIp = inetAddress;
+                        mWicked.mNetworkId = ip;
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            LogHelper.e(LOG_TAG, ex.toString());
+        }
         return null;
     }
 
     public void onPostExecute(Void v) {
+        setupOSCIn();
+        setupOSCout();
+    }
 
+    public void setupOSCIn () {
         LogHelper.d(LOG_TAG, "++++ Setting up OSC for: "+ mWicked.mNetworkId);
 
         try {
@@ -126,6 +154,13 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
                     Float velocity = (Float)arguments[1];
                     Float panning = (Float)arguments[2];
 
+                    mWicked.mCurrentCommand = name;
+                    //MNB: send local broadcast
+                    Intent i = new Intent();
+                    i.setAction(ACTION_MESSAGE_CHANGED);
+                    i.putExtra(EXTRA_WICKED, mWicked);
+                    LocalBroadcastManager.getInstance(mContext.getApplicationContext()).sendBroadcast(i);
+
                     fireSample(name, velocity, panning);
                 }
             });
@@ -136,17 +171,13 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
                     //TODO: Make this safe, please.
                     mWicked.mLevel = (int)arguments[0];
                     mWicked.mScore = (int)arguments[1];
+                    LogHelper.i(LOG_TAG,"Level: "+mWicked.mLevel+" Score: " + mWicked.mScore);
 
                     //MNB: NO CLUE IF THIS MAKES SENSE AT ALL:  send local broadcast
                     Intent i = new Intent();
                     i.setAction(ACTION_SCORE_CHANGED);
                     i.putExtra(EXTRA_WICKED, mWicked);
                     LocalBroadcastManager.getInstance(mContext.getApplicationContext()).sendBroadcast(i);
-                    LogHelper.v(LOG_TAG, "LocalBroadcast: ACTION_SCORE_CHANGED -> EXTRA_WICKED");
-
-
-
-                    LogHelper.i(LOG_TAG,"Level: "+mWicked.mLevel+" Score: " + mWicked.mScore);
                 }
             });
 
@@ -164,13 +195,13 @@ public class NetReceiver extends AsyncTask<String, Void, Void> implements Transi
                     LogHelper.i(LOG_TAG,"new GameServer Address: "+ mGameServer.toString());
                 }
             });
+
             receiver.startListening();
 
         } catch(Exception e) {
             LogHelper.e(LOG_TAG, "++++ Couldn't setup OSC In :( ++++\n"+ e.getMessage());
         }
 
-        setupOSCout();
     }
 
     private void setupOSCout() {
